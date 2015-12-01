@@ -99,7 +99,7 @@ ylim([-150 150]);
 h = circle(0, x, y, 'r');
 
 for r = 1:10:500
-    set(h, 'Visible', 'off')
+    delete(h);
     h = circle(r, x, y, 'r');
     pause(0.01);
 end
