@@ -63,7 +63,7 @@ plot(0, 0, '+b')
 
 % add microphones
 mic_coords = [150 0; 0 150; -150 0; 0 -150];
-plot(mic_coords(:,1), mic_coords(:,2), 'rO')
+plot(mic_coords(:,1), mic_coords(:,2), 'k.', 'MarkerSize', 20)
 hold off
 
 % Update handles structure
@@ -90,13 +90,19 @@ function target_axes_ButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = guidata(hObject);
+
+axes(hObject);
+hold on
 xlim([-150 150]);
 ylim([-150 150]);
 [x y] = ginput(1);
 h = circle(0, x, y, 'r');
+
 for r = 1:10:500
     set(h, 'Visible', 'off')
     h = circle(r, x, y, 'r');
     pause(0.01);
 end
+hold off
+
 guidata(hObject, handles);
