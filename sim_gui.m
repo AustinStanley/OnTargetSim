@@ -102,6 +102,8 @@ function target_axes_ButtonDownFcn(hObject, eventdata, handles)
     guidata(hObject, handles);
 
 function soundwave(x, y)
+% create a soundwave animation on current axes
+% centered at (x, y)
     h = circle(0, x, y, 'r');
     for r = 1:10:500
         delete(h);
