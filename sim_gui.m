@@ -95,14 +95,16 @@ axes(hObject);
 hold on
 xlim([-150 150]);
 ylim([-150 150]);
-[x y] = ginput(1);
-h = circle(0, x, y, 'r');
+[x, y] = ginput(1);
+soundwave(x, y);
+hold off
 
+guidata(hObject, handles);
+
+function soundwave(x, y)
+h = circle(0, x, y, 'r');
 for r = 1:10:500
     delete(h);
     h = circle(r, x, y, 'r');
     pause(0.01);
 end
-hold off
-
-guidata(hObject, handles);
