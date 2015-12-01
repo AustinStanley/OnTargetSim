@@ -5,7 +5,6 @@ function [h] = circle(r, x, y, fmt)
 %
 %   Returns a handle to the plot
 
-hold on
 th = 0:pi/50:2*pi;
 
 xunit = r * cos(th) + x;
