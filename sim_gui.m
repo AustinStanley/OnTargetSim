@@ -96,7 +96,7 @@ function target_axes_ButtonDownFcn(hObject, eventdata, handles)
     xlim([-150 150]);
     ylim([-150 150]);
     [h, k] = ginput(1);
-    soundwave(h, k);
+    tocs = soundwave(h, k)
     hold off
 
     guidata(hObject, handles);

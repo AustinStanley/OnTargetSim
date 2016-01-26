@@ -1,9 +1,13 @@
-function soundwave(h, k)
+function [tocs] = soundwave(h, k)
     % create a soundwave animation on current axes
     % centered at (h, k)
     
+    % TODO: move time calculations to separate function
+    
     c = circle(0, h, k, 'r');
     mics = [150 0; 0 150; -150 0; 0 -150];
+    tics = [0 0 0 0];
+    tocs = zeros(4);
     tolerance = 5.625;
     
     % speed of sound: 11.25 feet per centisecond
@@ -18,6 +22,7 @@ function soundwave(h, k)
             lhs = (mics(m,1) - h)^2 + (mics(m,2) - k)^2;
             if lhs > (r - tolerance)^2 && lhs < (r + tolerance)^2
                 fprintf('Spike detected on mic %d\n', m);
+                tics(m) = cputime;
             end
         end
         
@@ -25,4 +30,9 @@ function soundwave(h, k)
     end
     delete(c);
     
-    % test comment for slack integration
+    % calculate time difference between each pair of mics
+    for i = 1:1:4
+        for j = 1:1:4
+            tocs(i,j) = tics(j) - tics(i);
+        end
+    end
