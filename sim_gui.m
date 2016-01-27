@@ -22,7 +22,7 @@ function varargout = sim_gui(varargin)
 
     % Edit the above text to modify the response to help sim_gui
 
-    % Last Modified by GUIDE v2.5 30-Nov-2015 20:17:33
+    % Last Modified by GUIDE v2.5 27-Jan-2016 11:41:17
 
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -54,17 +54,8 @@ function sim_gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
     % Choose default command line output for sim_gui
     handles.output = hObject;
-
-    % plot target circle
-    axes(handles.target_axes)
-    hold on
-    circle(150, 0, 0, 'b');
-    plot(0, 0, '+b')
-
-    % add microphones
-    mic_coords = [150 0; 0 150; -150 0; 0 -150];
-    plot(mic_coords(:,1), mic_coords(:,2), 'k.', 'MarkerSize', 20)
-    hold off
+    
+    draw_target(hObject);
 
     % Update handles structure
     guidata(hObject, handles);
@@ -96,7 +87,42 @@ function target_axes_ButtonDownFcn(hObject, eventdata, handles)
     xlim([-150 150]);
     ylim([-150 150]);
     [h, k] = ginput(1);
+    set(handles.actual_text, 'String', sprintf('Actual: (%.2f, %.2f)', h, k));
+    plot(h, k, 'b.');
     tocs = soundwave(h, k)
     hold off
 
+    guidata(hObject, handles);
+    
+function draw_target(hObject)
+
+    handles = guidata(hObject);
+    % plot target circle
+    axes(handles.target_axes)
+    hold on
+    circle(150, 0, 0, 'b');
+    plot(0, 0, '+b')
+
+    % add microphones
+    mic_coords = [150 0; 0 150; -150 0; 0 -150];
+    plot(mic_coords(:,1), mic_coords(:,2), 'k.', 'MarkerSize', 20)
+    hold off
+    
+    guidata(hObject, handles);
+
+
+
+function button_clear_Callback(hObject, eventdata, handles)
+% hObject    handle to button_clear (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of button_clear as text
+%        str2double(get(hObject,'String')) returns contents of button_clear as a double
+
+    handles = guidata(hObject);
+    
+    cla(handles.target_axes);
+    draw_target(hObject);
+    
     guidata(hObject, handles);
