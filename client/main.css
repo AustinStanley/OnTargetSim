@@ -1,0 +1,70 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body > aside {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: calc(100% - 384px);
+}
+
+body > aside ~ main {
+  width: 384px;
+}
+
+body > main {
+  height: 100%;
+  background-color: #444;
+  overflow-y: scroll;
+}
+
+svg#target {
+  width: 100%;
+  height: 100%;
+}
+
+table#data {
+  table-layout: fixed;
+  width: 100%;
+  font-family: monospace;
+  border-spacing: 0;
+  line-height: 2.8em;
+  text-align: center;
+  color: #fff;
+  background-color: #444;
+}
+
+table#data th {
+  background-color: #222;
+}
+
+table#data th, table#data td {
+  border-bottom: 1px solid #000;
+}
+
+table#data th:not(:last-child), table#data td:not(:last-child) {
+  border-right: 1px solid #000;
+}
+
+table#data tr.selected td {
+  background-color: #c44;
+}
+
+table#data tr td:hover {
+  cursor: pointer;
+}
+
+main button {
+  border: none;
+  width: 100%;
+  line-height: 3.2em;
+  background-color: #c44;
+  color: #fff;
+}

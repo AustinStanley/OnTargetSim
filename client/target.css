@@ -1,0 +1,16 @@
+svg [data-group="impacts"] {
+  fill: rgba(255, 0, 0, 0.8);
+}
+
+svg [data-group="nodes"] {
+  fill: #00f;
+}
+
+svg [data-group="impacts"].selected circle:not(.selected) {
+  fill: transparent;
+}
+
+:target {
+  fill: purple;
+}
+

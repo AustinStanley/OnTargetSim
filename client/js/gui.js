@@ -1,0 +1,167 @@
+function TargetArea(radius, numMics, layers) {
+  // "private" property support for old browsers
+  this._radius = radius;
+  this._numMics = numMics;
+  this._layers = layers;
+  this._padding = this._radius / 64;
+  this._impacts = [];
+
+  // create actual DOM element
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + (radius * 2 + this._padding * 2) + ' ' + (radius * 2 + this._padding * 2));
+
+  // create group element to hold layers
+  var lg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  lg.setAttribute('data-group', 'layers');
+  lg.setAttribute('stroke', '#000');
+  lg.setAttribute('stroke-width', this._radius / 512);
+  lg.setAttribute('fill', 'none');
+
+  // add circles to layer group
+  for(var i = 1; i <= layers; i++) {
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', radius + this._padding);
+    c.setAttribute('cy', radius + this._padding);
+    c.setAttribute('r', radius * i / layers);
+    lg.appendChild(c);
+  }
+
+  // create group element to hold crosshair
+  var cg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  cg.setAttribute('data-group', 'crosshair');
+  cg.setAttribute('stroke', '#000');
+  cg.setAttribute('stroke-width', this._radius / 512);
+  //cg.setAttribute('stroke-dasharray', 0.5);
+
+  // add crosshairs to crosshair group
+  var hrz = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  hrz.setAttribute('x1', this._padding);
+  hrz.setAttribute('y1', this._padding + radius);
+  hrz.setAttribute('x2', this._padding + radius * 2);
+  hrz.setAttribute('y2', this._padding + radius);
+  cg.appendChild(hrz);
+  var vrt = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  vrt.setAttribute('x1', this._padding + radius);
+  vrt.setAttribute('y1', this._padding);
+  vrt.setAttribute('x2', this._padding + radius);
+  vrt.setAttribute('y2', this._padding + radius * 2);
+  cg.appendChild(vrt);
+
+  // create group element to hold nodes
+  var mg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  mg.setAttribute('data-group', 'nodes');
+
+  // add mics to node group
+  for(var i = 0; i < numMics; i++) {
+    var m = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    var theta = 2 * Math.PI * i / numMics - Math.PI / 2;
+    m.setAttribute('cx', Math.cos(theta) * radius + radius + this._padding);
+    m.setAttribute('cy', Math.sin(theta) * radius + radius + this._padding);
+    m.setAttribute('r', this._radius / 112);
+    mg.appendChild(m);
+  }
+
+  // create group element to hold impacts
+  var ig = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  ig.setAttribute('data-group', 'impacts');
+
+  // add groups to container
+  svg.appendChild(lg);
+  svg.appendChild(cg);
+  svg.appendChild(mg);
+  svg.appendChild(ig);
+
+  this._svg = svg;
+  this._lg = lg;
+  this._cg = cg;
+  this._mg = mg;
+  this._ig = ig;
+
+  // add panning
+  this._offX = 0;
+  this._offY = 0;
+
+  var cx = 0;
+  var cy = 0;
+
+  var panningHandler = (function (event) {
+    this._offX = cx - event.x;
+    this._offY = cy - event.y;
+    this.redraw();
+  }).bind(this);
+
+  svg.addEventListener('mousedown', (function (event) {
+    event.preventDefault();
+    cx = this._offX + event.x;
+    cy = this._offY + event.y;
+    this.redraw(); // remove
+    window.addEventListener('mousemove', panningHandler);
+  }).bind(this));
+
+  svg.addEventListener('mouseup', function (event) {
+    event.preventDefault();
+    window.removeEventListener('mousemove', panningHandler);
+  });
+
+  // add zooming
+  this._zoom = 0;
+
+  svg.addEventListener('wheel', (function (event) {
+    event.preventDefault();
+    this.scroll(event.deltaY);
+  }).bind(this));
+}
+
+Object.defineProperties(TargetArea.prototype, {
+  dom: {
+    get: function () {
+      return this._svg;
+    }
+  },
+  padding: {
+    get: function () {
+      return this._padding;
+    }
+  },
+  radius: {
+    get: function () {
+      return this._radius;
+    }
+  }
+});
+
+TargetArea.prototype.addImpact = function (x, y, time) {
+  this._impacts.push({
+    x: x,
+    y: y,
+    time: time
+  });
+  var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', x + this.padding + this.radius);
+  c.setAttribute('cy', -y + this.padding + this.radius);
+  c.setAttribute('r', this._radius / 256);
+  c.setAttribute('data-time', time);
+  /*var c = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  c.setAttribute('x', x + this.padding + this.radius);
+  c.setAttribute('y', -y + this.padding + this.radius);
+  c.textContent = 'x';
+  c.setAttribute('style', 'font-family: monospace');*/
+  this._ig.appendChild(c);
+  return c;
+};
+
+TargetArea.prototype.scroll = function (delta) {
+  this._zoom = Math.max(-1, Math.min(1 - 1e-6, this._zoom - delta / 1000));
+  this.redraw();
+};
+
+TargetArea.prototype.redraw = function () {
+  var x = this._zoom * (this.radius + this._padding) + this._offX;
+  var y = this._zoom * (this.radius + this._padding) + this._offY;
+  var b = (this.radius * 2 + this.padding * 2) * (1 - 1 * this._zoom);
+  this.dom.setAttribute('viewBox', x + ' ' + y + ' ' + b + ' ' + b);
+};
+
+TargetArea.prototype.pan = function (x, y) {
+  
+};
