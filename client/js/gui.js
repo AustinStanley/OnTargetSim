@@ -3,8 +3,9 @@ function TargetArea(radius, numMics, layers) {
   this._radius = radius;
   this._numMics = numMics;
   this._layers = layers;
-  this._padding = this._radius / 64;
+  this._padding = this._radius / 84;
   this._impacts = [];
+  this._zoom = 0;
 
   // create actual DOM element
   var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -14,7 +15,7 @@ function TargetArea(radius, numMics, layers) {
   var lg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   lg.setAttribute('data-group', 'layers');
   lg.setAttribute('stroke', '#000');
-  lg.setAttribute('stroke-width', this._radius / 512);
+  lg.setAttribute('stroke-width', this._radius / 512 * (1 - this._zoom));
   lg.setAttribute('fill', 'none');
 
   // add circles to layer group
@@ -30,7 +31,7 @@ function TargetArea(radius, numMics, layers) {
   var cg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   cg.setAttribute('data-group', 'crosshair');
   cg.setAttribute('stroke', '#000');
-  cg.setAttribute('stroke-width', this._radius / 512);
+  cg.setAttribute('stroke-width', this._radius / 512 * (1 - this._zoom));
   //cg.setAttribute('stroke-dasharray', 0.5);
 
   // add crosshairs to crosshair group
@@ -57,7 +58,7 @@ function TargetArea(radius, numMics, layers) {
     var theta = 2 * Math.PI * i / numMics - Math.PI / 2;
     m.setAttribute('cx', Math.cos(theta) * radius + radius + this._padding);
     m.setAttribute('cy', Math.sin(theta) * radius + radius + this._padding);
-    m.setAttribute('r', this._radius / 112);
+    m.setAttribute('r', this._padding * (1 - this._zoom));
     mg.appendChild(m);
   }
 
@@ -103,13 +104,11 @@ function TargetArea(radius, numMics, layers) {
     window.removeEventListener('mousemove', panningHandler);
   });
 
-  // add zooming
-  this._zoom = 0;
-
   svg.addEventListener('wheel', (function (event) {
     event.preventDefault();
     this.scroll(event.deltaY);
   }).bind(this));
+  window.test = this;
 }
 
 Object.defineProperties(TargetArea.prototype, {
@@ -131,27 +130,36 @@ Object.defineProperties(TargetArea.prototype, {
 });
 
 TargetArea.prototype.addImpact = function (x, y, time) {
-  this._impacts.push({
-    x: x,
-    y: y,
-    time: time
-  });
+  var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('data-id', this._impacts.length + 1);
   var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
   c.setAttribute('cx', x + this.padding + this.radius);
   c.setAttribute('cy', -y + this.padding + this.radius);
-  c.setAttribute('r', this._radius / 256);
-  c.setAttribute('data-time', time);
-  /*var c = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  c.setAttribute('x', x + this.padding + this.radius);
-  c.setAttribute('y', -y + this.padding + this.radius);
-  c.textContent = 'x';
-  c.setAttribute('style', 'font-family: monospace');*/
-  this._ig.appendChild(c);
+  c.setAttribute('r', this._radius / 112 * (1 - this._zoom));
+  var n = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  n.setAttribute('x', x + (this.padding + this.radius + 1.1) * (1 - this._zoom));
+  n.setAttribute('y', -y + (this.padding + this.radius - 2) * (1 - this._zoom));
+  n.setAttribute('font-size', 5 * (1 - this._zoom));
+  n.setAttribute('fill', '#000');
+  n.textContent = this._impacts.length + 1;
+  g.appendChild(n);
+  g.appendChild(c);
+  this._impacts.push({
+    x: x,
+    y: y,
+    time: time,
+    dom: {
+      g: g,
+      c: c,
+      n: n
+    }
+  });
+  this._ig.appendChild(g);
   return c;
 };
 
 TargetArea.prototype.scroll = function (delta) {
-  this._zoom = Math.max(-1, Math.min(1 - 1e-6, this._zoom - delta / 1000));
+  this._zoom = Math.max(-1, Math.min(1 - 1/64, this._zoom - delta / 1000));
   this.redraw();
 };
 
@@ -159,6 +167,17 @@ TargetArea.prototype.redraw = function () {
   var x = this._zoom * (this.radius + this._padding) + this._offX;
   var y = this._zoom * (this.radius + this._padding) + this._offY;
   var b = (this.radius * 2 + this.padding * 2) * (1 - 1 * this._zoom);
+  this._lg.setAttribute('stroke-width', this._radius / 512 * (1 - this._zoom));
+  this._cg.setAttribute('stroke-width', this._radius / 512 * (1 - this._zoom));
+  for(var i = 0; i < this._impacts.length; i++) {
+    this._impacts[i].dom.c.setAttribute('r', this._radius / 112 * (1 - this._zoom));
+    this._impacts[i].dom.n.setAttribute('font-size', 5 * (1 - this._zoom));
+    this._impacts[i].dom.n.setAttribute('x', this._impacts[i].x + this.padding + this.radius + 1.1 * (1 - this._zoom));
+    this._impacts[i].dom.n.setAttribute('y', -this._impacts[i].y + this.padding + this.radius - 2 * (1 - this._zoom));
+  }
+  for(var e = this._mg.firstChild; e; e = e.nextSibling) {
+    e.setAttribute('r', this._padding * (1 - this._zoom));
+  }
   this.dom.setAttribute('viewBox', x + ' ' + y + ' ' + b + ' ' + b);
 };
 

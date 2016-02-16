@@ -19,14 +19,14 @@ window.onload = function () {
       selected.removeAttribute('class');
       selectedRow.removeAttribute('class');
     }
-    var time = event.target.hasAttribute('data-time')
-             ? event.target.getAttribute('data-time')
-             : event.target.parentNode.querySelector('[data-time]').getAttribute('data-time');
-    var newSelected = impactGroup.querySelector('[data-time="' + time + '"]');
+    var id = event.target.hasAttribute('data-id')
+             ? event.target.getAttribute('data-id')
+             : event.target.parentNode.getAttribute('data-id');
+    var newSelected = impactGroup.querySelector('[data-id="' + id + '"]');
     if(newSelected !== selected) {
       selected = newSelected;
       selected.setAttribute('class', 'selected');
-      selectedRow = record.querySelector('[data-time="' + time + '"]').parentNode;
+      selectedRow = record.querySelector('[data-id="' + id + '"]');
       selectedRow.setAttribute('class', 'selected');
       impactGroup.setAttribute('class', 'selected');
       if(event.target.nodeName === 'circle') {
@@ -42,16 +42,19 @@ window.onload = function () {
   function addImpact(x, y, time) {
     impacts.push([x, y, time]);
     var row = document.createElement('tr');
+    var nC = document.createElement('td');
     var xC = document.createElement('td');
     var yC = document.createElement('td');
     var tC = document.createElement('td');
     var date = new Date(time);
+    row.setAttribute('data-id', impacts.length);
+    nC.textContent = impacts.length;
     xC.textContent = x.toFixed(2);
     xC.setAttribute('data-x', x);
     yC.textContent = y.toFixed(2);
     yC.setAttribute('data-y', y);
     tC.textContent = pad(2, date.getHours()) + ':' + pad(2, date.getMinutes()) + ':' + pad(2, date.getSeconds()) + ':' + pad(4, date.getMilliseconds());
-    tC.setAttribute('data-time', time);
+    row.appendChild(nC);
     row.appendChild(xC);
     row.appendChild(yC);
     row.appendChild(tC);
@@ -70,13 +73,18 @@ window.onload = function () {
     var y = Math.sin(Math.PI * ang / 180) * r;
     addImpact(x, y, Date.now());
   }
-  for(var i = 0; i < 50; i++) {
+  for(var i = 0; i < 100; i++) {
     setTimeout(go, 1000 + i * 20);
   }
+  var dlLink = document.createElement('a');
   var exportBtn = document.createElement('button');
   exportBtn.textContent = 'Export to CSV';
   exportBtn.addEventListener('click', function () {
-    window.open(encodeURI('data:text/csv;charset=utf-8,' + impacts.join('\n') + '\n'));
+    var d = new Date();
+    var stamp = d.getFullYear() + pad(2, d.getMonth() + 1) + pad(2, d.getDate());
+    dlLink.href = encodeURI('data:text/csv;charset=utf-8,' + impacts.join('\n') + '\n');
+    dlLink.download = 'impacts-' + stamp + '.csv';
+    dlLink.click();
   });
   document.querySelector('main').appendChild(exportBtn);
 };

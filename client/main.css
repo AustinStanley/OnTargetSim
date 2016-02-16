@@ -33,12 +33,17 @@ svg#target {
 table#data {
   table-layout: fixed;
   width: 100%;
+  font-size: 12px;
   font-family: monospace;
   border-spacing: 0;
   line-height: 2.8em;
-  text-align: center;
+  text-align: right;
   color: #fff;
   background-color: #444;
+}
+
+table#data th:last-child {
+  width: 40%;
 }
 
 table#data th {
@@ -47,6 +52,8 @@ table#data th {
 
 table#data th, table#data td {
   border-bottom: 1px solid #000;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 table#data th:not(:last-child), table#data td:not(:last-child) {
@@ -57,7 +64,11 @@ table#data tr.selected td {
   background-color: #c44;
 }
 
-table#data tr td:hover {
+table#data tr:hover {
+  background-color: #555;
+}
+
+table#data td:hover {
   cursor: pointer;
 }
 
@@ -67,4 +78,9 @@ main button {
   line-height: 3.2em;
   background-color: #c44;
   color: #fff;
+  cursor: pointer;
+}
+
+main button:hover {
+  background-color: #d55;
 }

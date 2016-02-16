@@ -6,11 +6,14 @@ svg [data-group="nodes"] {
   fill: #00f;
 }
 
-svg [data-group="impacts"].selected circle:not(.selected) {
-  fill: transparent;
+svg [data-group="impacts"].selected g:not(.selected) {
+  display: none;
 }
 
-:target {
-  fill: purple;
+svg [data-group="impacts"] circle {
+  cursor: crosshair;
 }
 
+svg [data-group="impacts"] text {
+  font-family: monospace;
+}
