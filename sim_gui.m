@@ -53,7 +53,10 @@ function sim_gui_OpeningFcn(hObject, eventdata, handles, varargin)
     % varargin   command line arguments to sim_gui (see VARARGIN)
 
     % Choose default command line output for sim_gui
-    handles.output = hObject;
+    handles.output = hObject;    
+    global mic_coords;
+    
+    mic_coords = [150 0; 0 150; -150 0; 0 -150];
     
     draw_target(hObject);
 
@@ -81,6 +84,10 @@ function target_axes_ButtonDownFcn(hObject, eventdata, handles)
     % eventdata  reserved - to be defined in a future version of MATLAB
     % handles    structure with handles and user data (see GUIDATA)
     handles = guidata(hObject);
+    global mic_coords;
+    speed_of_sound = 1125.33; % ft/s
+    tics = [0 0 0 0];
+    tocs = zeros(4);
 
     axes(hObject);
     hold on
@@ -88,15 +95,32 @@ function target_axes_ButtonDownFcn(hObject, eventdata, handles)
     ylim([-150 150]);
     [h, k] = ginput(1);
     set(handles.actual_text, 'String', sprintf('Actual: (%.2f, %.2f)', h, k));
+    
+    % calculate time of arrival for each mic    
+    for i = 1:1:4
+        tics(i) = sqrt((h - mic_coords(i,1))^2 + (k - mic_coords(i,2))^2);
+    end
+    
+    % calculate time difference for each pair of mics
+    for i = 1:1:4
+        for j = 1:1:4
+            tocs(i,j) = abs(tics(j) - tics(i));
+        end
+    end
+    
     plot(h, k, 'b.');
-    tocs = soundwave(h, k)
+    soundwave(h, k)
     hold off
+    tics
+    tocs
 
     guidata(hObject, handles);
     
 function draw_target(hObject)
 
     handles = guidata(hObject);
+    global mic_coords;
+    
     % plot target circle
     axes(handles.target_axes)
     hold on
@@ -104,7 +128,6 @@ function draw_target(hObject)
     plot(0, 0, '+b')
 
     % add microphones
-    mic_coords = [150 0; 0 150; -150 0; 0 -150];
     plot(mic_coords(:,1), mic_coords(:,2), 'k.', 'MarkerSize', 20)
     hold off
     
