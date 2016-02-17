@@ -12,6 +12,7 @@ function [tocs] = soundwave(h, k)
     
     % speed of sound: 11.25 feet per centisecond
     for r = 0.1:11.25:499.96
+    %for r = 0.1:1.125:499.96
         delete(c);
         c = circle(r, h, k, 'r');
         
@@ -22,11 +23,14 @@ function [tocs] = soundwave(h, k)
             lhs = (mics(m,1) - h)^2 + (mics(m,2) - k)^2;
             if lhs > (r - tolerance)^2 && lhs < (r + tolerance)^2
                 fprintf('Spike detected on mic %d\n', m);
-                tics(m) = cputime;
+                %tics(m) = cputime;
+                t = clock;
+                tics(m) = t(6);
             end
         end
         
         pause(0.01);
+        %delay(0.001);
     end
     delete(c);
     

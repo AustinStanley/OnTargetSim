@@ -117,9 +117,6 @@ function button_clear_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of button_clear as text
-%        str2double(get(hObject,'String')) returns contents of button_clear as a double
-
     handles = guidata(hObject);
     
     cla(handles.target_axes);
