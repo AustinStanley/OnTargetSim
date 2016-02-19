@@ -78,7 +78,7 @@ window.onload = () => {
     l.setAttribute('x2', width);
     l.setAttribute('y1', -(-width / 2 * m + b) + height / 2);
     l.setAttribute('y2', -(width / 2 * m + b) + height / 2);
-    l.setAttribute('stroke', h || '#000');
+    l.setAttribute('stroke', h || '#f00');
     setTimeout(() => svg.appendChild(l), drawTime());
     return new Line(m, b);
   }
@@ -118,7 +118,7 @@ window.onload = () => {
     var h = SvgPoint(externalHomotheticCenter(c[0], c[1]), '#f00');
     var l = SvgLine(l2p(p[mdx], h));
     var tp1s = ltcp(h, c[0]).map(SvgPoint);
-    tp1s.forEach(p => SvgLine(l2p(p, h), '#f00'));
+    tp1s.forEach(p => SvgLine(l2p(p, h)));
     var tp2s = ltcp(h, c[1]).map(SvgPoint);
     var tp1 = SvgPoint(distance(p, tp1s[0]) < distance(p, tp1s[1]) ? tp1s[0] : tp1s[1], '#f0f');
     tp2s.forEach(p => SvgLine(l2p(p, h), '#f00'));
