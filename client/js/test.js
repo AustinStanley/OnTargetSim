@@ -118,10 +118,10 @@ window.onload = () => {
     var h = SvgPoint(externalHomotheticCenter(c[0], c[1]), '#f00');
     var l = SvgLine(l2p(p[mdx], h));
     var tp1s = ltcp(h, c[0]).map(SvgPoint);
-    tp1s.map(p => SvgLine(l2p(p, h), '#f00'));
+    tp1s.forEach(p => SvgLine(l2p(p, h), '#f00'));
     var tp2s = ltcp(h, c[1]).map(SvgPoint);
     var tp1 = SvgPoint(distance(p, tp1s[0]) < distance(p, tp1s[1]) ? tp1s[0] : tp1s[1], '#f0f');
-    tp2s.map(p => SvgLine(l2p(p, h), '#f00'));
+    tp2s.forEach(p => SvgLine(l2p(p, h), '#f00'));
     var tp2 = SvgPoint(distance(p, tp2s[0]) < distance(p, tp2s[1]) ? tp2s[0] : tp2s[1], '#f0f');
     var c0 = SvgCircle(c3p(p[mdx], tp1, tp2));
     var p0s = lineCircleIntersection(l, c0).map(SvgPoint);
@@ -131,6 +131,7 @@ window.onload = () => {
     l2 = SvgLine(l2p(p1s[0], p1s[1]));
     h = SvgPoint(linesIntersection(l1, l2));
     var tp0s = ltcp(h, c[0]).map(SvgPoint);
+    tp0s.forEach(p => SvgLine(l2p(p, h)));
     var tp0 = SvgPoint(distance(p0s[1], tp0s[0]) < distance(p0s[1], tp0s[1]) ? tp0s[0] : tp0s[1]);
     c = SvgCircle(c3p(p0s[0], p0s[1], tp0));
     p = SvgPoint(c.p);
