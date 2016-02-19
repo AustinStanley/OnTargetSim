@@ -48,6 +48,7 @@ function distance(p1, p2) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
+// handle edge case where radii is same...
 function externalHomotheticCenter(c1, c2) {
   var x = (-c2.r / (c1.r - c2.r)) * c1.p.x + (c1.r / (c1.r - c2.r)) * c2.p.x;
   var y = (-c2.r / (c1.r - c2.r)) * c1.p.y + (c1.r / (c1.r - c2.r)) * c2.p.y;
@@ -68,6 +69,21 @@ function l2p(p1, p2) {
 
 // points tangent to circle from point
 function ltcp(p, c) {
+  /*var d = distance(p, c.p);
+  var h = Math.sqrt(Math.pow(d, 2) + Math.pow(c.r, 2));
+  return circleCircleIntersection(new Circle(p, h), c);*/
+  /*
+  var d = distance(p, c.p);
+  var h = distance(d, c.r);
+  var phi = Math.asin(c.r / h);
+  var tht = Math.asin((c.p.y - p.y) / d);
+  // case 1
+  var p1 = new Point(h * Math.cos(tht - phi) + p.x, h * Math.sin(tht - phi) + p.y);
+  // case 2
+  var p2 = new Point(h * Math.cos(tht + phi) + p.x, h * Math.sin(tht + phi) + p.y);
+  */
+
+  
   // get vector d from point to center of circle
   var d = (c.p.x < p.x ? -1 : 1) * distance(p, c.p);
   // get vector l from point to tangent points
@@ -78,6 +94,7 @@ function ltcp(p, c) {
   var p1 = new Point(l * Math.cos(phi - tht) + p.x, l * Math.sin(phi - tht) + p.y);
   // case 2
   var p2 = new Point(l * Math.cos(phi + tht) + p.x, l * Math.sin(phi + tht) + p.y);
+  
   return [p1, p2];
 }
 
@@ -89,10 +106,19 @@ function lpb2p(p1, p2) {
   return new Line(m, b);
 }
 
+function midpoint(p1, p2) {
+  return new Point(0.5 * (p2.x - p1.x) + p1.x, 0.5 * (p2.y - p1.y) + p1.y);
+}
+
 // circle that goes through 3 points
 function c3p(p1, p2, p3) {
-  var l1 = lpb2p(p1, p2);
-  var l2 = lpb2p(p2, p3);
+  // avoid undefined perpendicular bisector line
+  var a1 = p1;
+  var a2 = p2.y !== p1.y ? p2 : p3;
+  var b1 = p2.y !== p3.y ? p2 : p1;
+  var b2 = p3;
+  var l1 = lpb2p(a1, a2);
+  var l2 = lpb2p(b1, b2);
   var p = linesIntersection(l1, l2);
   return new Circle(p, distance(p, p1));
 }
@@ -153,5 +179,7 @@ potential issue with circles of same radii as a homothetic center can't be calcu
 this case suggests the impact landed perfectly between two mics that are being tested
 
 another potential issue is drawing a vertical line on the coordinate system
+
+another edge case when the apollonius PCC intersection with homothetic center is tangent to circle, but this is unlikely
 
 */

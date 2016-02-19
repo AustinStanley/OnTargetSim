@@ -93,8 +93,8 @@ function TargetArea(radius, numMics, layers) {
 
   svg.addEventListener('mousedown', (function (event) {
     event.preventDefault();
-    cx = this._offX + event.x;
-    cy = this._offY + event.y;
+    cx = event.x;
+    cy = event.y;
     this.redraw(); // remove
     window.addEventListener('mousemove', panningHandler);
   }).bind(this));
