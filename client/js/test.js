@@ -45,14 +45,12 @@ window.onload = () => {
   // algorithm functions
 
   var drawTime = (function () {
-    var timeout = 1;
-    var queue = 0;
-    var n = 5;
+    var timeout = -5;
     return function () {
-      if(queue++ < n) {
+      if(++timeout < 0) {
         return 0;
       }
-      return timeout++ * 200;
+      return timeout * 600;
     };
   })();
 
