@@ -6,8 +6,8 @@ window.onload = () => {
 
   var svg = document.querySelector('svg');
 
-  var width = 5000;
-  var height = 5000;
+  var width = 500;
+  var height = 500;
 
   var g1 = cSvg('g');
   var c1 = cSvg('circle');
@@ -99,10 +99,14 @@ window.onload = () => {
 
   // algorithm...
 
-  (function () {
-    var p = [SvgPoint(150, 0, '#00f'), SvgPoint(-150, 0, '#00f'), SvgPoint(0, -150, '#00f')];
+  function ran(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-    var i = SvgPoint(Math.random() * 200 - 100, Math.random() * 200 - 100, '#0f0');
+  (function () {
+    var p = [SvgPoint(50, 0, '#00f'), SvgPoint(-50, 0, '#00f'), SvgPoint(0, -50, '#00f')];
+
+    var i = SvgPoint(ran(-40, 40), ran(-40, 40), '#0f0');
     //var i = SvgPoint(-31, -23, '#0f0');
 
     var dis = p.map(p => distance(p, i));
