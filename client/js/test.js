@@ -131,7 +131,7 @@ window.onload = () => {
     l2 = SvgLine(l2p(p1s[0], p1s[1]));
     h = SvgPoint(linesIntersection(l1, l2));
     var tp0s = ltcp(h, c[0]).map(SvgPoint);
-    tp0 = SvgPoint(distance(p0s[1], tp0s[0]) < distance(p0s[1], tp0s[1]) ? tp0s[0] : tp0s[1]);
+    var tp0 = SvgPoint(distance(p0s[1], tp0s[0]) < distance(p0s[1], tp0s[1]) ? tp0s[0] : tp0s[1]);
     c = SvgCircle(c3p(p0s[0], p0s[1], tp0));
     p = SvgPoint(c.p);
 
