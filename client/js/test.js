@@ -134,6 +134,23 @@ window.onload = () => {
     c = SvgCircle(c3p(p0s[0], p0s[1], tp0));
     p = SvgPoint(c.p);
 
+    var g3 = cSvg('g');
+    g3.setAttribute('style', 'font-family: monospace; font-size: 9px;');
+
+    var text = cSvg('text');
+    text.textContent = 'calc: ' + c.p.x + ',' + c.p.y;
+    text.setAttribute('x', 4);
+    text.setAttribute('y', 24);
+    g3.appendChild(text);
+
+    var text2 = cSvg('text');
+    text2.textContent = 'real: ' + i.x + ',' + i.y;
+    text2.setAttribute('style', 'font-size: 9px');
+    text2.setAttribute('x', 4);
+    text2.setAttribute('y', 12);
+    g3.appendChild(text2);
+
+    svg.appendChild(g3);
   })();
 
 };
