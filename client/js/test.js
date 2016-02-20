@@ -118,9 +118,9 @@ window.onload = () => {
     var tp1s = ltcp(h, c[0]).map(SvgPoint);
     tp1s.forEach(p => SvgLine(l2p(p, h)));
     var tp2s = ltcp(h, c[1]).map(SvgPoint);
-    var tp1 = SvgPoint(distance(p, tp1s[0]) < distance(p, tp1s[1]) ? tp1s[0] : tp1s[1], '#f0f');
+    var tp1 = SvgPoint(distance(p[mdx], tp1s[0]) < distance(p[mdx], tp1s[1]) ? tp1s[0] : tp1s[1], '#f0f');
     tp2s.forEach(p => SvgLine(l2p(p, h), '#f00'));
-    var tp2 = SvgPoint(distance(p, tp2s[0]) < distance(p, tp2s[1]) ? tp2s[0] : tp2s[1], '#f0f');
+    var tp2 = SvgPoint(distance(p[mdx], tp2s[0]) < distance(p[mdx], tp2s[1]) ? tp2s[0] : tp2s[1], '#f0f');
     var c0 = SvgCircle(c3p(p[mdx], tp1, tp2));
     var p0s = lineCircleIntersection(l, c0).map(SvgPoint);
     c0 = SvgCircle(c3p(p0s[0], p0s[1], c[0].p));
