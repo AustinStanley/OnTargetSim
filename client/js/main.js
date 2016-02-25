@@ -78,6 +78,7 @@ window.onload = function () {
   }
   var dlLink = document.createElement('a');
   var exportBtn = document.createElement('button');
+  exportBtn.setAttribute('class', 'button');
   exportBtn.textContent = 'Export to CSV';
   exportBtn.addEventListener('click', function () {
     var d = new Date();
@@ -87,4 +88,38 @@ window.onload = function () {
     dlLink.click();
   });
   document.querySelector('main').appendChild(exportBtn);
+  var isFormatted = (() => {
+    var coord = '-?\\d+(\\.\\d+)?(e-?\\d+)?';
+    var milli = '\\d+';
+    var row = coord + ',' + coord + ',' + milli;
+    var regexp = new RegExp('^\\s*' + row + '(\\s+' + row + ')*\\s*$');
+    return RegExp.prototype.test.bind(regexp);
+  })();
+  var uploadBtn = document.createElement('label');
+  uploadBtn.setAttribute('class', 'button');
+  uploadBtn.textContent = 'Upload CSV';
+  var inputFile = document.createElement('input');
+  inputFile.setAttribute('type', 'file');
+  inputFile.addEventListener('change', (event) => {
+    var files = event.target.files;
+    var reader = new FileReader();
+    reader.onload = (event) => {
+      if(!isFormatted(event.target.result)) {
+        alert('File not formatted correctly');
+      } else {
+        impacts = [];
+        while(record.firstChild) {
+          record.removeChild(record.firstChild);
+        }
+        ta.clear();
+        event.target.result
+          .split(/[\n\r]+/)
+          .filter(row => row.trim() !== '')
+          .forEach(row => addImpact(...row.split(',').map(Number)));
+      }
+    };
+    reader.readAsText(files[0]);
+  });
+  uploadBtn.appendChild(inputFile);
+  document.querySelector('main').appendChild(uploadBtn);
 };

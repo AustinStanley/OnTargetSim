@@ -129,6 +129,15 @@ Object.defineProperties(TargetArea.prototype, {
   }
 });
 
+TargetArea.prototype.clear = function () {
+  this._impacts.forEach((i) => {
+    i.dom.g.parentNode.removeChild(i.dom.g);
+    i.dom.c.parentNode.removeChild(i.dom.c);
+    i.dom.n.parentNode.removeChild(i.dom.n);
+  });
+  this._impacts = [];
+};
+
 TargetArea.prototype.addImpact = function (x, y, time) {
   var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   g.setAttribute('data-id', this._impacts.length + 1);

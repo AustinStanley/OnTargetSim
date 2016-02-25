@@ -1,6 +1,7 @@
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
 html, body {
@@ -72,15 +73,38 @@ table#data td:hover {
   cursor: pointer;
 }
 
-main button {
+main .button {
   border: none;
   width: 100%;
   line-height: 3.2em;
   background-color: #c44;
   color: #fff;
   cursor: pointer;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  text-align: center;
+  display: inline-block;
+  border-bottom: 1px solid #000;
 }
 
-main button:hover {
+main .button input {
+  display: none;
+}
+
+main .button:last-child {
+  width: 100%;
+}
+
+main > .button:nth-child(even):not(:last-child),
+main > .button:nth-child(even) + .button {
+  width: 50%;
+}
+
+main > .button:nth-child(even) + .button {
+  border-left: 1px solid #000;
+}
+
+main .button:hover, main .button:focus {
+  outline: none;
   background-color: #d55;
 }

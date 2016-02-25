@@ -69,21 +69,6 @@ function l2p(p1, p2) {
 
 // points tangent to circle from point
 function ltcp(p, c) {
-  /*var d = distance(p, c.p);
-  var h = Math.sqrt(Math.pow(d, 2) + Math.pow(c.r, 2));
-  return circleCircleIntersection(new Circle(p, h), c);*/
-  /*
-  var d = distance(p, c.p);
-  var h = distance(d, c.r);
-  var phi = Math.asin(c.r / h);
-  var tht = Math.asin((c.p.y - p.y) / d);
-  // case 1
-  var p1 = new Point(h * Math.cos(tht - phi) + p.x, h * Math.sin(tht - phi) + p.y);
-  // case 2
-  var p2 = new Point(h * Math.cos(tht + phi) + p.x, h * Math.sin(tht + phi) + p.y);
-  */
-
-  
   // get vector d from point to center of circle
   var d = (c.p.x < p.x ? -1 : 1) * distance(p, c.p);
   // get vector l from point to tangent points
@@ -94,7 +79,6 @@ function ltcp(p, c) {
   var p1 = new Point(l * Math.cos(phi - tht) + p.x, l * Math.sin(phi - tht) + p.y);
   // case 2
   var p2 = new Point(l * Math.cos(phi + tht) + p.x, l * Math.sin(phi + tht) + p.y);
-  
   return [p1, p2];
 }
 
@@ -104,6 +88,10 @@ function lpb2p(p1, p2) {
   var m = -1 / slope(p1, p2);
   var b = midpoint.y - (m * midpoint.x);
   return new Line(m, b);
+}
+
+function approxEqual(v1, v2) {
+  return Math.abs(v1 - v2) < 1e-6;
 }
 
 function midpoint(p1, p2) {
@@ -162,6 +150,7 @@ function apolloniusPPC(p1, p2, c) {
   // find tangent points from intersection on known circle
   var tp0s = ltcp(h, c);
   // select point closest to a known point
+  // *** WARNING *** this assumption fails on certain impacts outside of the triangle area
   var tp0 = distance(p1, tp0s[0]) < distance(p1, tp0s[1]) ? tp0s[0] : tp0s[1];
   return [p1, p2, tp0];
 }
