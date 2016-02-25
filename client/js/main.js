@@ -100,6 +100,7 @@ window.onload = function () {
   uploadBtn.textContent = 'Upload CSV';
   var inputFile = document.createElement('input');
   inputFile.setAttribute('type', 'file');
+  inputFile.setAttribute('accept', '.csv');
   inputFile.addEventListener('change', (event) => {
     var files = event.target.files;
     var reader = new FileReader();

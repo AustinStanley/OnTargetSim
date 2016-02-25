@@ -1,3 +1,5 @@
+// fix size, adding impacts while zoomed in
+
 function TargetArea(radius, numMics, layers) {
   // "private" property support for old browsers
   this._radius = radius;
