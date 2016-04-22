@@ -66,7 +66,7 @@ window.onload = function () {
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  function go() {
+  /*function go() {
     var r = getRandomInt(0, 70);
     var ang = getRandomInt(0, 360);
     var x = Math.cos(Math.PI * ang / 180) * r;
@@ -75,7 +75,7 @@ window.onload = function () {
   }
   for(var i = 0; i < 100; i++) {
     setTimeout(go, 1000 + i * 20);
-  }
+  }*/
   var dlLink = document.createElement('a');
   var exportBtn = document.createElement('button');
   exportBtn.setAttribute('class', 'button');
@@ -90,7 +90,7 @@ window.onload = function () {
   document.querySelector('main').appendChild(exportBtn);
   var isFormatted = (() => {
     var coord = '-?\\d+(\\.\\d+)?(e-?\\d+)?';
-    var milli = '\\d+';
+    var milli = '\\d+(\\.\\d+)?';
     var row = coord + ',' + coord + ',' + milli;
     var regexp = new RegExp('^\\s*' + row + '(\\s+' + row + ')*\\s*$');
     return RegExp.prototype.test.bind(regexp);

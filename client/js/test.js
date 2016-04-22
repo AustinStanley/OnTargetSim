@@ -50,7 +50,7 @@ window.onload = () => {
       if(++timeout < 0) {
         return 0;
       }
-      return timeout * 250;
+      return timeout * 500;
     };
   })();
 
@@ -102,9 +102,11 @@ window.onload = () => {
   }
 
   (function () {
-    var p = [SvgPoint(50, 0, '#00f'), SvgPoint(-50, 0, '#00f'), SvgPoint(0, 50, '#00f')];
+    var p = [SvgPoint(0, 9, '#00f'), SvgPoint(2, 7, '#00f'), SvgPoint(-2, 6, '#00f')];
 
-    var i = SvgPoint(ran(-30, 30), ran(-30, 30), '#0f0');
+    //var i = SvgPoint(ran(-20, 20), ran(-20, 20), '#0f0');
+    var i = SvgPoint(-1, 2, '#0f0');
+    //var i = SvgPoint(-29.092, -29.863258, '#0f0');
     //var i = SvgPoint(40.17, 45, '#0f0');
     // case FOR < check
     //var i = {x: -24.74460476078093, y: -93.2647452224046};
