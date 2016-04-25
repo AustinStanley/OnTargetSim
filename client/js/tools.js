@@ -48,6 +48,7 @@ function distance(p1, p2) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
+// handle edge case where radii is same...
 function externalHomotheticCenter(c1, c2) {
   var x = (-c2.r / (c1.r - c2.r)) * c1.p.x + (c1.r / (c1.r - c2.r)) * c2.p.x;
   var y = (-c2.r / (c1.r - c2.r)) * c1.p.y + (c1.r / (c1.r - c2.r)) * c2.p.y;
@@ -89,10 +90,23 @@ function lpb2p(p1, p2) {
   return new Line(m, b);
 }
 
+function approxEqual(v1, v2) {
+  return Math.abs(v1 - v2) < 1e-6;
+}
+
+function midpoint(p1, p2) {
+  return new Point(0.5 * (p2.x - p1.x) + p1.x, 0.5 * (p2.y - p1.y) + p1.y);
+}
+
 // circle that goes through 3 points
 function c3p(p1, p2, p3) {
-  var l1 = lpb2p(p1, p2);
-  var l2 = lpb2p(p2, p3);
+  // avoid undefined perpendicular bisector line
+  var a1 = p1;
+  var a2 = p2.y !== p1.y ? p2 : p3;
+  var b1 = p2.y !== p3.y ? p2 : p1;
+  var b2 = p3;
+  var l1 = lpb2p(a1, a2);
+  var l2 = lpb2p(b1, b2);
   var p = linesIntersection(l1, l2);
   return new Circle(p, distance(p, p1));
 }
@@ -136,6 +150,7 @@ function apolloniusPPC(p1, p2, c) {
   // find tangent points from intersection on known circle
   var tp0s = ltcp(h, c);
   // select point closest to a known point
+  // *** WARNING *** this assumption fails on certain impacts outside of the triangle area
   var tp0 = distance(p1, tp0s[0]) < distance(p1, tp0s[1]) ? tp0s[0] : tp0s[1];
   return [p1, p2, tp0];
 }
@@ -153,5 +168,7 @@ potential issue with circles of same radii as a homothetic center can't be calcu
 this case suggests the impact landed perfectly between two mics that are being tested
 
 another potential issue is drawing a vertical line on the coordinate system
+
+another edge case when the apollonius PCC intersection with homothetic center is tangent to circle, but this is unlikely
 
 */
